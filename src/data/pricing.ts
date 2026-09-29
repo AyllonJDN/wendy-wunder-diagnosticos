@@ -4,11 +4,11 @@ export const PRICING_TITLE = "¿Tu precio refleja tu valor?";
 export const PRICING_SUBTITLE =
   "5 señales de que estás cobrando desde el miedo y no desde tu posicionamiento.";
 export const PRICING_INSTRUCTION =
-  "Marca cada situación que te haya pasado durante el último mes.";
+  "Responde si cada situación te pasó o no durante el último mes.";
 export const PRICING_INTRO_NOTE =
   "Al final podrás identificar cuántas señales tienes y, lo más importante, qué áreas de tus ventas necesitas revisar.";
 export const PRICING_INSTRUCTION_NOTE =
-  "Puedes marcar varias señales. Si una situación no te ha pasado, continúa sin marcarla.";
+  "Puede que te pasen varias señales, o ninguna. Responde con honestidad: no hay respuestas buenas ni malas.";
 
 export const SIGNALS: PricingSignal[] = [
   {

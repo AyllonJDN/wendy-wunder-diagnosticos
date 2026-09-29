@@ -1,5 +1,6 @@
 import { computePricing, normalizeSignals } from "../../../lib/diagnostics/pricing";
 import { computeScaling } from "../../../lib/diagnostics/scaling";
+import { changeLabel, situationLabel } from "../../../data/contact";
 import { submissionRequestSchema } from "../../../lib/validation/schemas";
 
 export const runtime = "nodejs";
@@ -38,6 +39,9 @@ export async function POST(request: Request) {
     name: contact.name,
     email: contact.email || null,
     phone: contact.phone || null,
+    situation: situationLabel(contact.situation),
+    desired_change: changeLabel(contact.desiredChange),
+    question_for_wendy: contact.question || null,
     consent_at: now,
   };
   // El score se recalcula en el servidor con la misma función central.

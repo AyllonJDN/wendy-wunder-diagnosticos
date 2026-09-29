@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import {
   NEXT_LEVEL_HEADING,
   NEXT_LEVEL_OPTIONS,
@@ -27,7 +26,6 @@ import { SocialLinks } from "./SocialLinks";
 import { ArrowIcon } from "./icons";
 import {
   ChoiceGroup,
-  OptionFace,
   PatternInterlude,
   Prompt,
   WizardFrame,
@@ -39,16 +37,12 @@ const TOTAL = SIGNALS.length + 1;
 export function PricingTool() {
   const [phase, setPhase] = useState<Phase>("intro");
   const [step, setStep] = useState(0);
-  const [signals, setSignals] = useState<SignalId[]>([]);
+  const [marks, setMarks] = useState<Partial<Record<SignalId, boolean>>>({});
+  const signals = SIGNALS.filter((x) => marks[x.id]).map((x) => x.id);
   const [goal, setGoal] = useState<NextLevelGoal | undefined>();
   const [other, setOther] = useState("");
   const [submissionId] = useState(newSubmissionId);
   const [contact, setContact] = useState<Contact | undefined>();
-
-  const toggle = (id: SignalId) =>
-    setSignals((cur) =>
-      cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id],
-    );
 
   if (phase === "intro") {
     return (
@@ -98,7 +92,9 @@ export function PricingTool() {
         onNext={() =>
           step === TOTAL - 1 ? setPhase("pattern") : setStep(step + 1)
         }
-        nextDisabled={isGoalStep ? !goalOk : false}
+        nextDisabled={
+          isGoalStep ? !goalOk : marks[signal!.id] === undefined
+        }
       >
         {signal ? (
           <>
@@ -117,20 +113,24 @@ export function PricingTool() {
                 </p>
               </div>
             </div>
-            <div className="mt-10">
-              <label className="block cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="peer sr-only"
-                  checked={signals.includes(signal.id)}
-                  onChange={() => toggle(signal.id)}
-                />
-                <OptionFace label="Me pasó durante el último mes" />
-              </label>
-              <p className="mt-3 text-sm text-grey">
-                Si no te pasó, continúa sin marcar.
-              </p>
-            </div>
+            <ChoiceGroup
+              name={`signal-${signal.id}`}
+              labelledBy={`s-${signal.id}`}
+              options={[
+                { value: "si", label: "Me pasó durante el último mes" },
+                { value: "no", label: "No me pasó durante el último mes" },
+              ]}
+              value={
+                marks[signal.id] === undefined
+                  ? undefined
+                  : marks[signal.id]
+                    ? "si"
+                    : "no"
+              }
+              onChange={(v) =>
+                setMarks((cur) => ({ ...cur, [signal.id]: v === "si" }))
+              }
+            />
           </>
         ) : (
           <>
@@ -242,7 +242,7 @@ export function PricingTool() {
           </Row>
           <Row label="Lo que necesitas revisar">
             {result.toReview.length === 0 ? (
-              <p>No marcaste señales, así que no hay áreas por revisar aquí.</p>
+              <p>No reconociste ninguna señal, así que no hay áreas por revisar aquí.</p>
             ) : (
               result.toReview.map((s) => (
                 <div key={s.id}>
@@ -411,10 +411,6 @@ export function PricingTool() {
           >
             Editar mis respuestas
           </button>
-          <Link href="/antes-de-escalar" className="btn btn-ghost">
-            Hacer el diagnóstico 01
-            <ArrowIcon />
-          </Link>
         </div>
       </div>
     </main>

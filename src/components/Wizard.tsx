@@ -1,6 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  CHANGE_OPTIONS,
+  CHANGE_QUESTION,
+  QUESTION_FOR_WENDY,
+  SITUATION_OPTIONS,
+  SITUATION_QUESTION,
+} from "@/data/contact";
 import type { Contact } from "@/types";
 import { ArrowIcon, CheckIcon } from "./icons";
 
@@ -178,6 +185,9 @@ export function PatternInterlude({
   const [name, setName] = useState(initial?.name ?? "");
   const [email, setEmail] = useState(initial?.email ?? "");
   const [phone, setPhone] = useState(initial?.phone ?? "");
+  const [situation, setSituation] = useState<string>(initial?.situation ?? "");
+  const [change, setChange] = useState<string>(initial?.desiredChange ?? "");
+  const [question, setQuestion] = useState(initial?.question ?? "");
   const [consent, setConsent] = useState(Boolean(initial));
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -197,6 +207,8 @@ export function PatternInterlude({
       return setError("Revisa tu correo: parece incompleto.");
     if (ph && !PHONE_RE.test(ph))
       return setError("Revisa tu teléfono: usa solo números, espacios o +.");
+    if (!situation) return setError("Cuéntanos cuál es tu situación actual.");
+    if (!change) return setError("Elige el cambio que más te gustaría lograr.");
     if (!consent)
       return setError("Necesitamos tu autorización para guardar tus datos.");
     setError("");
@@ -205,6 +217,9 @@ export function PatternInterlude({
       name: n,
       email: em || undefined,
       phone: ph || undefined,
+      situation: situation as Contact["situation"],
+      desiredChange: change as Contact["desiredChange"],
+      question: question.trim() || undefined,
       consent: true,
     });
     setBusy(false);
@@ -280,7 +295,38 @@ export function PatternInterlude({
           </p>
         </div>
 
-        <label className="mt-6 flex cursor-pointer items-start gap-3">
+
+        <div className="mt-8 grid gap-6 border-t border-line pt-8">
+          <SelectField
+            id="c-situation"
+            label={SITUATION_QUESTION}
+            value={situation}
+            onChange={setSituation}
+            options={SITUATION_OPTIONS}
+          />
+          <SelectField
+            id="c-change"
+            label={CHANGE_QUESTION}
+            value={change}
+            onChange={setChange}
+            options={CHANGE_OPTIONS}
+          />
+          <div>
+            <label htmlFor="c-question" className="mb-2 block font-semibold">
+              {QUESTION_FOR_WENDY}
+            </label>
+            <textarea
+              id="c-question"
+              className="field min-h-32 resize-y"
+              maxLength={1000}
+              rows={4}
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <label className="mt-8 flex cursor-pointer items-start gap-3">
           <input
             type="checkbox"
             checked={consent}
@@ -312,5 +358,55 @@ export function PatternInterlude({
         </div>
       </form>
     </main>
+  );
+}
+
+function SelectField({
+  id,
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: readonly { value: string; label: string }[];
+}) {
+  return (
+    <div>
+      <label htmlFor={id} className="mb-2 block font-semibold">
+        {label} <span className="text-magenta" aria-hidden="true">*</span>
+      </label>
+      <div className="relative">
+        <select
+          id={id}
+          required
+          className="field w-full cursor-pointer appearance-none pr-12"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+        >
+          <option value="" disabled>
+            Selecciona una opción
+          </option>
+          {options.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+        <svg
+          className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-grey"
+          viewBox="0 0 20 20"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          aria-hidden="true"
+        >
+          <path d="M5 8l5 5 5-5" />
+        </svg>
+      </div>
+    </div>
   );
 }

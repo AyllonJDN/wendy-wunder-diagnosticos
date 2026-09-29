@@ -116,5 +116,8 @@ export interface Contact {
   name: string;
   email?: string;
   phone?: string;
+  situation: "negocio-propio" | "independiente" | "ejecutiva" | "por-emprender";
+  desiredChange: "mas-ingresos" | "cobrar-mejor" | "mejores-clientes" | "claridad";
+  question?: string;
   consent: true;
 }

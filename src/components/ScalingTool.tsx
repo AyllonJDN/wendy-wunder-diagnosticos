@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import {
   SCALING_CLOSING,
   SCALING_CLOSING_NOTE,
@@ -343,10 +342,6 @@ export function ScalingTool() {
           >
             Editar mis respuestas
           </button>
-          <Link href="/precio-y-valor" className="btn btn-ghost">
-            Hacer el diagnóstico 02
-            <ArrowIcon />
-          </Link>
         </div>
       </div>
     </main>

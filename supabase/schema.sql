@@ -23,6 +23,10 @@ alter table public.submissions add column if not exists name text;
 alter table public.submissions add column if not exists email text;
 alter table public.submissions add column if not exists phone text;
 alter table public.submissions add column if not exists consent_at timestamptz;
+-- Perfil (pantalla de datos)
+alter table public.submissions add column if not exists situation text;
+alter table public.submissions add column if not exists desired_change text;
+alter table public.submissions add column if not exists question_for_wendy text;
 
 -- Seguridad: RLS activado y SIN políticas => la clave pública (anon) no puede
 -- leer ni escribir. Solo el servidor (clave secreta) puede guardar.

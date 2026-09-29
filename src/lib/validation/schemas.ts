@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CHANGE_VALUES, SITUATION_VALUES } from "../../data/contact";
 
 const optionalText = (max: number) =>
   z
@@ -68,6 +69,9 @@ export const contactSchema = z
           .regex(/^[+\d][\d\s().-]{5,}$/)
           .optional(),
       ),
+    situation: z.enum(SITUATION_VALUES),
+    desiredChange: z.enum(CHANGE_VALUES),
+    question: optionalText(1000),
     consent: z.literal(true),
   })
   .refine((c) => Boolean(c.email || c.phone), {
