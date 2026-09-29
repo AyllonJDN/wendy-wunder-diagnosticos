@@ -111,3 +111,10 @@ export interface PricingResult {
 }
 
 export type DiagnosticKind = "scaling" | "pricing";
+
+export interface Contact {
+  name: string;
+  email?: string;
+  phone?: string;
+  consent: true;
+}

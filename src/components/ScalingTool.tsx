@@ -14,7 +14,7 @@ import {
   type ScalingField,
 } from "@/data/scaling";
 import { computeScaling } from "@/lib/diagnostics/scaling";
-import type { ScalingAnswers } from "@/types";
+import type { Contact, ScalingAnswers } from "@/types";
 import { newSubmissionId, saveSubmission } from "./client";
 import { ResultActions } from "./ResultActions";
 import { SocialLinks } from "./SocialLinks";
@@ -29,6 +29,7 @@ export function ScalingTool() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Partial<ScalingAnswers>>({});
   const [submissionId] = useState(newSubmissionId);
+  const [contact, setContact] = useState<Contact | undefined>();
 
   const set = (field: ScalingField, value: string) =>
     setAnswers((a) => ({ ...a, [field]: value }));
@@ -50,8 +51,15 @@ export function ScalingTool() {
           <details className="group mt-8 border-y border-ink">
             <summary className="label flex min-h-14 cursor-pointer list-none items-center justify-between py-4">
               <span>Lee la mini guía antes de responder</span>
-              <span aria-hidden="true" className="text-xl group-open:hidden">+</span>
-              <span aria-hidden="true" className="hidden text-xl group-open:inline">−</span>
+              <span aria-hidden="true" className="text-xl group-open:hidden">
+                +
+              </span>
+              <span
+                aria-hidden="true"
+                className="hidden text-xl group-open:inline"
+              >
+                −
+              </span>
             </summary>
             <div className="space-y-10 pb-8 pt-2">
               {SCALING_GUIDE.map((g) => (
@@ -59,7 +67,9 @@ export function ScalingTool() {
                   <h2 className="font-display text-3xl font-black uppercase">
                     <span className="text-magenta">{g.n}.</span> {g.title}
                   </h2>
-                  <p className="font-display mt-2 text-xl font-bold italic">{g.lead}</p>
+                  <p className="font-display mt-2 text-xl font-bold italic">
+                    {g.lead}
+                  </p>
                   <div className="mt-3 space-y-3">
                     {g.paragraphs.map((p) => (
                       <p key={p}>{p}</p>
@@ -73,7 +83,9 @@ export function ScalingTool() {
                     </ul>
                   ) : null}
                   <p className="mt-3 font-semibold">Hazte esta pregunta:</p>
-                  <p className="font-display text-lg font-bold italic">{g.ask}</p>
+                  <p className="font-display text-lg font-bold italic">
+                    {g.ask}
+                  </p>
                   <p className="mt-3">{g.after}</p>
                 </section>
               ))}
@@ -132,13 +144,15 @@ export function ScalingTool() {
   if (phase === "pattern") {
     return (
       <PatternInterlude
+        initial={contact}
         onBack={() => {
           setStep(TOTAL - 1);
           setPhase("questions");
         }}
-        onNext={() => {
+        onSubmit={async (c) => {
+          setContact(c);
+          await saveSubmission("scaling", submissionId, answers, c);
           window.scrollTo({ top: 0 });
-          saveSubmission("scaling", submissionId, answers);
           setPhase("result");
         }}
       />
@@ -293,6 +307,7 @@ export function ScalingTool() {
             kind="scaling"
             answers={payloadAnswers}
             submissionId={submissionId}
+            contact={contact}
           />
         </div>
 

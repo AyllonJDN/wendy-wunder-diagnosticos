@@ -20,7 +20,7 @@ import {
   SIGNALS,
 } from "@/data/pricing";
 import { computePricing } from "@/lib/diagnostics/pricing";
-import type { NextLevelGoal, PricingAnswers, SignalId } from "@/types";
+import type { Contact, NextLevelGoal, PricingAnswers, SignalId } from "@/types";
 import { newSubmissionId, saveSubmission } from "./client";
 import { ResultActions } from "./ResultActions";
 import { SocialLinks } from "./SocialLinks";
@@ -43,6 +43,7 @@ export function PricingTool() {
   const [goal, setGoal] = useState<NextLevelGoal | undefined>();
   const [other, setOther] = useState("");
   const [submissionId] = useState(newSubmissionId);
+  const [contact, setContact] = useState<Contact | undefined>();
 
   const toggle = (id: SignalId) =>
     setSignals((cur) =>
@@ -171,18 +172,25 @@ export function PricingTool() {
   if (phase === "pattern") {
     return (
       <PatternInterlude
+        initial={contact}
         onBack={() => {
           setStep(TOTAL - 1);
           setPhase("questions");
         }}
-        onNext={() => {
+        onSubmit={async (c) => {
+          setContact(c);
+          await saveSubmission(
+            "pricing",
+            submissionId,
+            {
+              signals,
+              nextLevelGoal: goal ?? "otra",
+              nextLevelOther:
+                goal === "otra" ? other.trim() || undefined : undefined,
+            },
+            c,
+          );
           window.scrollTo({ top: 0 });
-          saveSubmission("pricing", submissionId, {
-            signals,
-            nextLevelGoal: goal ?? "otra",
-            nextLevelOther:
-              goal === "otra" ? other.trim() || undefined : undefined,
-          });
           setPhase("result");
         }}
       />
@@ -367,6 +375,7 @@ export function PricingTool() {
             kind="pricing"
             answers={answers}
             submissionId={submissionId}
+            contact={contact}
           />
         </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import type { Contact } from "@/types";
 import { ArrowIcon, CheckIcon } from "./icons";
 
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -157,20 +158,61 @@ export function OptionFace({
   );
 }
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const PHONE_RE = /^[+\d][\d\s().-]{5,}$/;
+
+/**
+ * Pantalla previa al resultado: el patrón + datos de contacto.
+ * Nombre obligatorio, correo o teléfono (al menos uno) y consentimiento.
+ */
 export function PatternInterlude({
   onBack,
-  onNext,
+  onSubmit,
+  initial,
 }: {
   onBack: () => void;
-  onNext: () => void;
+  onSubmit: (contact: Contact) => Promise<void> | void;
+  initial?: Contact;
 }) {
   const ref = useRef<HTMLHeadingElement>(null);
+  const [name, setName] = useState(initial?.name ?? "");
+  const [email, setEmail] = useState(initial?.email ?? "");
+  const [phone, setPhone] = useState(initial?.phone ?? "");
+  const [consent, setConsent] = useState(Boolean(initial));
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
   useEffect(() => {
     ref.current?.focus();
   }, []);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    const n = name.trim();
+    const em = email.trim();
+    const ph = phone.trim();
+    if (n.length < 2) return setError("Escribe tu nombre para continuar.");
+    if (!em && !ph)
+      return setError("Déjanos tu correo o tu teléfono para continuar.");
+    if (em && !EMAIL_RE.test(em))
+      return setError("Revisa tu correo: parece incompleto.");
+    if (ph && !PHONE_RE.test(ph))
+      return setError("Revisa tu teléfono: usa solo números, espacios o +.");
+    if (!consent)
+      return setError("Necesitamos tu autorización para guardar tus datos.");
+    setError("");
+    setBusy(true);
+    await onSubmit({
+      name: n,
+      email: em || undefined,
+      phone: ph || undefined,
+      consent: true,
+    });
+    setBusy(false);
+  }
+
   return (
     <main className="mx-auto max-w-3xl px-5 pb-10 pt-8 sm:px-8 sm:pt-16 lg:pl-28">
-      <div className="rise">
+      <form onSubmit={submit} noValidate className="rise">
         <div
           className="bg-brand-gradient mb-8 h-[6px] w-24"
           aria-hidden="true"
@@ -178,20 +220,97 @@ export function PatternInterlude({
         <h1
           ref={ref}
           tabIndex={-1}
-          className="font-display text-4xl font-black uppercase leading-[1.05] outline-none sm:text-7xl"
+          className="font-display text-4xl font-black uppercase leading-[1.05] outline-none sm:text-6xl"
         >
           Tus respuestas ya muestran un patrón.
         </h1>
-        <div className="mt-12 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+        <p className="mt-6 max-w-xl text-xl text-grey">
+          Un último paso: déjanos tus datos para ver tu diagnóstico y
+          descargarlo.
+        </p>
+
+        <div className="mt-10 grid gap-5 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <label htmlFor="c-name" className="mb-2 block font-semibold">
+              Nombre
+            </label>
+            <input
+              id="c-name"
+              className="field"
+              type="text"
+              autoComplete="name"
+              maxLength={80}
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="c-email" className="mb-2 block font-semibold">
+              Correo
+            </label>
+            <input
+              id="c-email"
+              className="field"
+              type="email"
+              autoComplete="email"
+              inputMode="email"
+              maxLength={200}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="c-phone" className="mb-2 block font-semibold">
+              Teléfono
+            </label>
+            <input
+              id="c-phone"
+              className="field"
+              type="tel"
+              autoComplete="tel"
+              inputMode="tel"
+              maxLength={30}
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
+          <p className="text-sm text-grey sm:col-span-2">
+            Con uno de los dos es suficiente: correo o teléfono.
+          </p>
+        </div>
+
+        <label className="mt-6 flex cursor-pointer items-start gap-3">
+          <input
+            type="checkbox"
+            checked={consent}
+            onChange={(e) => setConsent(e.target.checked)}
+            className="mt-1 h-5 w-5 shrink-0 cursor-pointer accent-[#d10851]"
+          />
+          <span className="text-base">
+            Autorizo a Wendy Wünder a guardar mis datos de contacto y mis
+            respuestas para poder contactarme.
+          </span>
+        </label>
+
+        <p
+          role="alert"
+          aria-live="assertive"
+          className="mt-4 min-h-6 font-semibold text-magenta"
+        >
+          {error}
+        </p>
+
+        <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
           <button type="button" className="btn btn-ghost" onClick={onBack}>
             Anterior
           </button>
-          <button type="button" className="btn" onClick={onNext}>
-            Ver mi diagnóstico
+          <button type="submit" className="btn" disabled={busy}>
+            {busy ? "Guardando…" : "Ver mi diagnóstico"}
             <ArrowIcon />
           </button>
         </div>
-      </div>
+      </form>
     </main>
   );
 }

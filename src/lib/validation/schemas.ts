@@ -46,15 +46,45 @@ export const pricingPdfRequestSchema = z.object({
   answers: pricingAnswersSchema,
 });
 
+export const contactSchema = z
+  .object({
+    name: z.string().trim().min(2).max(80),
+    email: z
+      .string()
+      .trim()
+      .max(200)
+      .optional()
+      .transform((v) => v || undefined)
+      .pipe(z.email().optional()),
+    phone: z
+      .string()
+      .trim()
+      .max(30)
+      .optional()
+      .transform((v) => v || undefined)
+      .pipe(
+        z
+          .string()
+          .regex(/^[+\d][\d\s().-]{5,}$/)
+          .optional(),
+      ),
+    consent: z.literal(true),
+  })
+  .refine((c) => Boolean(c.email || c.phone), {
+    message: "Se necesita correo o teléfono",
+  });
+
 export const submissionRequestSchema = z.discriminatedUnion("kind", [
   z.object({
     kind: z.literal("scaling"),
     id: z.uuid(),
     answers: scalingAnswersSchema,
+    contact: contactSchema,
   }),
   z.object({
     kind: z.literal("pricing"),
     id: z.uuid(),
     answers: pricingAnswersSchema,
+    contact: contactSchema,
   }),
 ]);

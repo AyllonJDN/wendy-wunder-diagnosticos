@@ -39,24 +39,30 @@ export async function downloadPdf(
 }
 
 /**
- * Guarda (o actualiza) las respuestas de esta sesión. Es "fire and forget":
- * nunca bloquea ni muestra errores al usuario. El servidor hace upsert por id.
+ * Guarda (o actualiza) respuestas y contacto de esta sesión. El servidor hace
+ * upsert por id. Devuelve true si quedó guardado; nunca lanza errores.
  */
-export function saveSubmission(
+export async function saveSubmission(
   kind: "scaling" | "pricing",
   id: string,
   answers: unknown,
-): void {
-  try {
-    void fetch("/api/submissions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ kind, id, answers }),
-      keepalive: true,
-    }).catch(() => undefined);
-  } catch {
-    /* sin efecto */
+  contact: unknown,
+): Promise<boolean> {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetch("/api/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ kind, id, answers, contact }),
+        keepalive: true,
+      });
+      if (res.ok) return true;
+      if (res.status === 400) return false;
+    } catch {
+      /* reintenta una vez */
+    }
   }
+  return false;
 }
 
 export function newSubmissionId(): string {

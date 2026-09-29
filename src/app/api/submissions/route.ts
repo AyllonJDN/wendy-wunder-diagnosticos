@@ -5,12 +5,16 @@ import { submissionRequestSchema } from "../../../lib/validation/schemas";
 export const runtime = "nodejs";
 
 /**
- * Guarda las respuestas en Supabase (tabla `submissions`) usando la API REST
+ * Guarda las respuestas y los datos de contacto (con consentimiento) en
+ * Supabase (tabla `submissions`) usando la API REST
  * con la clave de servidor. La clave nunca llega al navegador. Si Supabase no
  * está configurado o falla, la plataforma sigue funcionando igual.
  */
 export async function POST(request: Request) {
-  const url = process.env.SUPABASE_URL?.replace(/\/+$/, "");
+  const url = process.env.SUPABASE_URL?.trim()
+    .replace(/\/+$/, "")
+    .replace(/\/rest\/v1$/, "")
+    .replace(/\/+$/, "");
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) {
     return Response.json({ ok: false, stored: false }, { status: 202 });
@@ -29,6 +33,13 @@ export async function POST(request: Request) {
 
   const data = parsed.data;
   const now = new Date().toISOString();
+  const { contact } = data;
+  const contactFields = {
+    name: contact.name,
+    email: contact.email || null,
+    phone: contact.phone || null,
+    consent_at: now,
+  };
   // El score se recalcula en el servidor con la misma función central.
   const row =
     data.kind === "scaling"
@@ -41,6 +52,7 @@ export async function POST(request: Request) {
           main_blocker: data.answers.mainBlocker,
           goal_90_days: data.answers.goal90Days,
           reflection: data.answers.reflection || null,
+          ...contactFields,
           updated_at: now,
         }
       : {
@@ -54,6 +66,7 @@ export async function POST(request: Request) {
           signals: normalizeSignals(data.answers.signals),
           next_level_goal: data.answers.nextLevelGoal,
           next_level_other: data.answers.nextLevelOther || null,
+          ...contactFields,
           updated_at: now,
         };
 

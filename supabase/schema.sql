@@ -1,4 +1,5 @@
--- Ejecutar una sola vez en Supabase: SQL Editor -> New query -> Run.
+-- Ejecutar en Supabase: SQL Editor -> New query -> Run.
+-- Es seguro correrlo varias veces (no borra datos).
 create table if not exists public.submissions (
   id uuid primary key,
   kind text not null check (kind in ('scaling', 'pricing')),
@@ -16,6 +17,12 @@ create table if not exists public.submissions (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- Datos de contacto (con consentimiento)
+alter table public.submissions add column if not exists name text;
+alter table public.submissions add column if not exists email text;
+alter table public.submissions add column if not exists phone text;
+alter table public.submissions add column if not exists consent_at timestamptz;
 
 -- Seguridad: RLS activado y SIN políticas => la clave pública (anon) no puede
 -- leer ni escribir. Solo el servidor (clave secreta) puede guardar.
