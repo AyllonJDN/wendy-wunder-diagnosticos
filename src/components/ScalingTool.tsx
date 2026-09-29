@@ -89,9 +89,6 @@ export function ScalingTool() {
               Comenzar
               <ArrowIcon />
             </button>
-            <Link href="/" className="btn btn-ghost">
-              Volver al inicio
-            </Link>
           </div>
         </div>
       </main>

@@ -5,7 +5,7 @@ import { Portrait } from "@/components/Portrait";
 const TOOLS = [
   {
     n: "01",
-    title: "3 preguntas antes de escalar cualquier idea",
+    title: "6 preguntas antes de escalar cualquier idea",
     text: "El filtro para saber si tu producto está listo para crecer o si todavía necesitas validarlo.",
     cta: "Empezar diagnóstico",
     href: "/antes-de-escalar",

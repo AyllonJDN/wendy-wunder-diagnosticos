@@ -1,6 +1,6 @@
 # WENDY WÜNDER · Diagnósticos
 
-Plataforma con dos herramientas: **3 preguntas antes de escalar cualquier idea** (`/antes-de-escalar`) y **¿Tu precio refleja tu valor?** (`/precio-y-valor`). Lógica 100 % determinística (sin IA); la misma función alimenta la web y el PDF descargable.
+Plataforma con dos herramientas: **6 preguntas antes de escalar cualquier idea** (`/antes-de-escalar`) y **¿Tu precio refleja tu valor?** (`/precio-y-valor`). Lógica 100 % determinística (sin IA); la misma función alimenta la web y el PDF descargable.
 
 ## Desarrollo
 

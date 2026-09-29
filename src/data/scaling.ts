@@ -1,10 +1,10 @@
 import type { DimensionKey, Goal90, MainBlocker, Stage, YesNo } from "../types";
 
-export const SCALING_TITLE = "3 preguntas antes de escalar cualquier idea";
+export const SCALING_TITLE = "6 preguntas antes de escalar cualquier idea";
 export const SCALING_SUBTITLE =
   "El filtro para saber si tu producto está listo para crecer o si todavía necesitas validarlo.";
 export const SCALING_INTRO = [
-  "Antes de invertir más dinero, tiempo o energía en una idea, hazte estas 3 preguntas.",
+  "Antes de invertir más dinero, tiempo o energía en una idea, hazte estas 6 preguntas.",
   "Porque escalar algo que todavía no funciona no hace que funcione más rápido. Solo hace que el problema sea más grande.",
 ];
 
