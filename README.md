@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WENDY WÜNDER · Diagnósticos
 
-## Getting Started
+Plataforma con dos herramientas: **3 preguntas antes de escalar cualquier idea** (`/antes-de-escalar`) y **¿Tu precio refleja tu valor?** (`/precio-y-valor`). Lógica 100 % determinística (sin IA); la misma función alimenta web, PDF y correo.
 
-First, run the development server:
+## Desarrollo
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+npm.cmd install
+npm.cmd run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre http://localhost:3000. Validación: `npm.cmd run lint` y `npm.cmd run build`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Variables de entorno
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copia `.env.example` a `.env.local` (ignorado por git).
 
-## Learn More
+- `RESEND_API_KEY` – clave de Resend. Sin ella el correo no se envía, pero la descarga del PDF funciona igual.
+- `RESEND_FROM_EMAIL` – remitente verificado en Resend, p. ej. `WENDY WÜNDER <hola@tudominio.com>`.
+- `NEXT_PUBLIC_MENTORIA_URL` – URL del botón "QUIERO APLICAR". Vacía = el botón no se muestra.
 
-To learn more about Next.js, take a look at the following resources:
+## Deploy
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+GitHub → Vercel: sube el repositorio, impórtalo en Vercel, agrega las variables de entorno y despliega.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Estructura
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/lib/diagnostics/` – funciones de diagnóstico (única fuente de verdad).
+- `src/lib/pdf/` – PDFs con `@react-pdf/renderer` y `renderPdf.ts`.
+- `src/app/api/pdf/*` y `src/app/api/email` – descarga y envío.
+- `src/data/` – textos y preguntas.
+- Foto de Wendy: `public/wendy.png`.
