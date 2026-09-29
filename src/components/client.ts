@@ -37,3 +37,28 @@ export async function downloadPdf(
     return { ok: false, message: GENERIC };
   }
 }
+
+/**
+ * Guarda (o actualiza) las respuestas de esta sesión. Es "fire and forget":
+ * nunca bloquea ni muestra errores al usuario. El servidor hace upsert por id.
+ */
+export function saveSubmission(
+  kind: "scaling" | "pricing",
+  id: string,
+  answers: unknown,
+): void {
+  try {
+    void fetch("/api/submissions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ kind, id, answers }),
+      keepalive: true,
+    }).catch(() => undefined);
+  } catch {
+    /* sin efecto */
+  }
+}
+
+export function newSubmissionId(): string {
+  return crypto.randomUUID();
+}

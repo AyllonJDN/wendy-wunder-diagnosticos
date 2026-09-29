@@ -15,6 +15,7 @@ import {
 } from "@/data/scaling";
 import { computeScaling } from "@/lib/diagnostics/scaling";
 import type { ScalingAnswers } from "@/types";
+import { newSubmissionId, saveSubmission } from "./client";
 import { ResultActions } from "./ResultActions";
 import { SocialLinks } from "./SocialLinks";
 import { ArrowIcon } from "./icons";
@@ -27,6 +28,7 @@ export function ScalingTool() {
   const [phase, setPhase] = useState<Phase>("intro");
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Partial<ScalingAnswers>>({});
+  const [submissionId] = useState(newSubmissionId);
 
   const set = (field: ScalingField, value: string) =>
     setAnswers((a) => ({ ...a, [field]: value }));
@@ -136,6 +138,7 @@ export function ScalingTool() {
         }}
         onNext={() => {
           window.scrollTo({ top: 0 });
+          saveSubmission("scaling", submissionId, answers);
           setPhase("result");
         }}
       />
@@ -286,7 +289,11 @@ export function ScalingTool() {
         </section>
 
         <div className="mt-12">
-          <ResultActions kind="scaling" answers={payloadAnswers} />
+          <ResultActions
+            kind="scaling"
+            answers={payloadAnswers}
+            submissionId={submissionId}
+          />
         </div>
 
         {/* Cierre */}

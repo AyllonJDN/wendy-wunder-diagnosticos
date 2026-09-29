@@ -21,6 +21,7 @@ import {
 } from "@/data/pricing";
 import { computePricing } from "@/lib/diagnostics/pricing";
 import type { NextLevelGoal, PricingAnswers, SignalId } from "@/types";
+import { newSubmissionId, saveSubmission } from "./client";
 import { ResultActions } from "./ResultActions";
 import { SocialLinks } from "./SocialLinks";
 import { ArrowIcon } from "./icons";
@@ -41,6 +42,7 @@ export function PricingTool() {
   const [signals, setSignals] = useState<SignalId[]>([]);
   const [goal, setGoal] = useState<NextLevelGoal | undefined>();
   const [other, setOther] = useState("");
+  const [submissionId] = useState(newSubmissionId);
 
   const toggle = (id: SignalId) =>
     setSignals((cur) =>
@@ -175,6 +177,12 @@ export function PricingTool() {
         }}
         onNext={() => {
           window.scrollTo({ top: 0 });
+          saveSubmission("pricing", submissionId, {
+            signals,
+            nextLevelGoal: goal ?? "otra",
+            nextLevelOther:
+              goal === "otra" ? other.trim() || undefined : undefined,
+          });
           setPhase("result");
         }}
       />
@@ -355,7 +363,11 @@ export function PricingTool() {
         </section>
 
         <div className="mt-12">
-          <ResultActions kind="pricing" answers={answers} />
+          <ResultActions
+            kind="pricing"
+            answers={answers}
+            submissionId={submissionId}
+          />
         </div>
 
         <section className="bg-ink mt-14 px-6 py-10 text-white sm:px-10">

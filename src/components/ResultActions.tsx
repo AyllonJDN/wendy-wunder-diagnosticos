@@ -1,16 +1,18 @@
 "use client";
 
 import { useId, useState } from "react";
-import { downloadPdf } from "./client";
+import { downloadPdf, saveSubmission } from "./client";
 
 type Status = { ok: boolean; message: string } | null;
 
 export function ResultActions({
   kind,
   answers,
+  submissionId,
 }: {
   kind: "scaling" | "pricing";
   answers: unknown;
+  submissionId: string;
 }) {
   const uid = useId();
   const [name, setName] = useState("");
@@ -20,6 +22,8 @@ export function ResultActions({
   async function onDownload() {
     setBusy(true);
     setStatus(null);
+    // Actualiza lo guardado (p. ej. la reflexión escrita después del resultado).
+    saveSubmission(kind, submissionId, answers);
     const res = await downloadPdf(kind, {
       name: name.trim() || undefined,
       answers,
@@ -66,6 +70,11 @@ export function ResultActions({
       >
         {busy ? "Preparando…" : "Descargar mi diagnóstico"}
       </button>
+
+      <p className="mt-4 max-w-md text-sm text-grey">
+        Guardamos tus respuestas de forma anónima para mejorar estas
+        herramientas. No guardamos tu nombre.
+      </p>
 
       <p
         role="status"

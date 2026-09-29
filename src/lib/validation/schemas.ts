@@ -45,3 +45,16 @@ export const pricingPdfRequestSchema = z.object({
   name: nameSchema,
   answers: pricingAnswersSchema,
 });
+
+export const submissionRequestSchema = z.discriminatedUnion("kind", [
+  z.object({
+    kind: z.literal("scaling"),
+    id: z.uuid(),
+    answers: scalingAnswersSchema,
+  }),
+  z.object({
+    kind: z.literal("pricing"),
+    id: z.uuid(),
+    answers: pricingAnswersSchema,
+  }),
+]);
