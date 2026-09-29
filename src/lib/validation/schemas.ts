@@ -71,7 +71,7 @@ export const contactSchema = z
       ),
     situation: z.enum(SITUATION_VALUES),
     desiredChange: z.enum(CHANGE_VALUES),
-    question: optionalText(1000),
+    question: z.string().trim().min(3).max(1000),
     consent: z.literal(true),
   })
   .refine((c) => Boolean(c.email || c.phone), {

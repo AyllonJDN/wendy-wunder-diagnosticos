@@ -118,6 +118,6 @@ export interface Contact {
   phone?: string;
   situation: "negocio-propio" | "independiente" | "ejecutiva" | "por-emprender";
   desiredChange: "mas-ingresos" | "cobrar-mejor" | "mejores-clientes" | "claridad";
-  question?: string;
+  question: string;
   consent: true;
 }

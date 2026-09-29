@@ -209,6 +209,8 @@ export function PatternInterlude({
       return setError("Revisa tu teléfono: usa solo números, espacios o +.");
     if (!situation) return setError("Cuéntanos cuál es tu situación actual.");
     if (!change) return setError("Elige el cambio que más te gustaría lograr.");
+    if (question.trim().length < 3)
+      return setError("Cuéntanos qué le preguntarías a Wendy.");
     if (!consent)
       return setError("Necesitamos tu autorización para guardar tus datos.");
     setError("");
@@ -219,7 +221,7 @@ export function PatternInterlude({
       phone: ph || undefined,
       situation: situation as Contact["situation"],
       desiredChange: change as Contact["desiredChange"],
-      question: question.trim() || undefined,
+      question: question.trim(),
       consent: true,
     });
     setBusy(false);
@@ -247,7 +249,10 @@ export function PatternInterlude({
         <div className="mt-10 grid gap-5 sm:grid-cols-2">
           <div className="sm:col-span-2">
             <label htmlFor="c-name" className="mb-2 block font-semibold">
-              Nombre
+              Nombre{" "}
+              <span className="text-magenta" aria-hidden="true">
+                *
+              </span>
             </label>
             <input
               id="c-name"
@@ -313,10 +318,14 @@ export function PatternInterlude({
           />
           <div>
             <label htmlFor="c-question" className="mb-2 block font-semibold">
-              {QUESTION_FOR_WENDY}
+              {QUESTION_FOR_WENDY}{" "}
+              <span className="text-magenta" aria-hidden="true">
+                *
+              </span>
             </label>
             <textarea
               id="c-question"
+              required
               className="field min-h-32 resize-y"
               maxLength={1000}
               rows={4}
