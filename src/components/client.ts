@@ -1,7 +1,6 @@
 export interface ApiMessage {
   ok: boolean;
   message: string;
-  code?: string;
 }
 
 const GENERIC =
@@ -34,28 +33,6 @@ export async function downloadPdf(
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 2000);
     return { ok: true, message: "Tu diagnóstico se descargó." };
-  } catch {
-    return { ok: false, message: GENERIC };
-  }
-}
-
-export async function sendEmail(body: {
-  kind: "scaling" | "pricing";
-  email: string;
-  name?: string;
-  answers: unknown;
-}): Promise<ApiMessage> {
-  try {
-    const res = await fetch("/api/email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    const data = (await res.json().catch(() => null)) as ApiMessage | null;
-    if (data && typeof data.message === "string") {
-      return { ok: res.ok && data.ok, message: data.message, code: data.code };
-    }
-    return { ok: false, message: GENERIC };
   } catch {
     return { ok: false, message: GENERIC };
   }

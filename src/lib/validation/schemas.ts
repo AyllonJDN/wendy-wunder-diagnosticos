@@ -45,22 +45,3 @@ export const pricingPdfRequestSchema = z.object({
   name: nameSchema,
   answers: pricingAnswersSchema,
 });
-
-const emailField = z.string().trim().max(200).pipe(z.email());
-
-export const emailRequestSchema = z.discriminatedUnion("kind", [
-  z.object({
-    kind: z.literal("scaling"),
-    email: emailField,
-    name: nameSchema,
-    answers: scalingAnswersSchema,
-  }),
-  z.object({
-    kind: z.literal("pricing"),
-    email: emailField,
-    name: nameSchema,
-    answers: pricingAnswersSchema,
-  }),
-]);
-
-export type EmailRequest = z.infer<typeof emailRequestSchema>;

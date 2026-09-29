@@ -33,8 +33,8 @@ export type PdfInput =
     };
 
 /**
- * Único punto de generación del PDF. La ruta de descarga y el correo llaman
- * a esta misma función, así que el archivo es idéntico en ambos casos.
+ * Único punto de generación del PDF: reconstruye el diagnóstico desde las
+ * respuestas con la misma función central que usa la web.
  */
 export async function renderDiagnosticPdf(input: PdfInput): Promise<Buffer> {
   const date = todayLabel();

@@ -32,3 +32,20 @@ export function ArrowIcon({ className = "" }: { className?: string }) {
     </svg>
   );
 }
+
+export function ArrowUpRight({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 12 12"
+      width="11"
+      height="11"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M2 10L10 2M4 2h6v6" />
+    </svg>
+  );
+}

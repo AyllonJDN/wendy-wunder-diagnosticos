@@ -188,8 +188,6 @@ export const SCALING_CLOSING_NOTE = [
   "Se trata de escalar algo que ya funciona.",
 ];
 
-export const SCALING_MENTORIA_LEAD =
-  "Si descubriste que todavía hay algo que validar, ajustar o preparar antes de escalar, el siguiente paso es identificar qué necesitas trabajar primero y cómo hacerlo. Si quieres hacerlo conmigo, puedes aplicar a una mentoría.";
 
 export interface GuideSection {
   n: string;

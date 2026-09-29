@@ -16,13 +16,13 @@ import {
   PRICING_TITLE,
   REFLECTION_ITEMS,
   PRICING_INTRO_NOTE,
-  PRICING_MENTORIA_LEAD,
   REFLECTION_TITLE,
   SIGNALS,
 } from "@/data/pricing";
 import { computePricing } from "@/lib/diagnostics/pricing";
 import type { NextLevelGoal, PricingAnswers, SignalId } from "@/types";
 import { ResultActions } from "./ResultActions";
+import { SocialLinks } from "./SocialLinks";
 import { ArrowIcon } from "./icons";
 import {
   ChoiceGroup,
@@ -358,11 +358,7 @@ export function PricingTool() {
         </section>
 
         <div className="mt-12">
-          <ResultActions
-            kind="pricing"
-            answers={answers}
-            mentoriaLead={PRICING_MENTORIA_LEAD}
-          />
+          <ResultActions kind="pricing" answers={answers} />
         </div>
 
         <section className="bg-ink mt-14 px-6 py-10 text-white sm:px-10">
@@ -382,6 +378,8 @@ export function PricingTool() {
             {PRICING_CLOSING_CTA.join(" ")}
           </p>
         </section>
+
+        <SocialLinks className="mt-14" />
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <button

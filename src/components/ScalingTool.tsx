@@ -6,7 +6,6 @@ import {
   SCALING_CLOSING,
   SCALING_CLOSING_NOTE,
   SCALING_GUIDE,
-  SCALING_MENTORIA_LEAD,
   SCALING_INTRO,
   SCALING_QUESTIONS,
   SCALING_REFLECTION_PROMPT,
@@ -17,6 +16,7 @@ import {
 import { computeScaling } from "@/lib/diagnostics/scaling";
 import type { ScalingAnswers } from "@/types";
 import { ResultActions } from "./ResultActions";
+import { SocialLinks } from "./SocialLinks";
 import { ArrowIcon } from "./icons";
 import { ChoiceGroup, PatternInterlude, Prompt, WizardFrame } from "./Wizard";
 
@@ -289,11 +289,7 @@ export function ScalingTool() {
         </section>
 
         <div className="mt-12">
-          <ResultActions
-            kind="scaling"
-            answers={payloadAnswers}
-            mentoriaLead={result.score < 3 ? SCALING_MENTORIA_LEAD : undefined}
-          />
+          <ResultActions kind="scaling" answers={payloadAnswers} />
         </div>
 
         {/* Cierre */}
@@ -313,6 +309,8 @@ export function ScalingTool() {
             {SCALING_CLOSING_NOTE.join(" ")}
           </p>
         </section>
+
+        <SocialLinks className="mt-14" />
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <button

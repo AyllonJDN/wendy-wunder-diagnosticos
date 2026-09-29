@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { SocialLinks } from "./SocialLinks";
 
 export function SiteChrome({ children }: { children: ReactNode }) {
   return (
@@ -45,6 +46,9 @@ export function SiteChrome({ children }: { children: ReactNode }) {
           <span className="text-sm text-grey">
             Herramientas para decidir mejor sobre crecimiento, ventas y valor.
           </span>
+        </div>
+        <div className="mx-auto max-w-6xl px-5 pb-8 sm:px-8 lg:pl-28">
+          <SocialLinks compact />
         </div>
       </footer>
     </>

@@ -300,6 +300,3 @@ export const PRICING_CLOSING_CTA = [
 export const FALLBACK_WEEK_ACTION =
   "Escribe en una frase qué significaría avanzar en lo que indicaste y define una primera acción pequeña para esta semana.";
 
-/** Texto que acompaña al botón de mentoría (solo se muestra con URL configurada). */
-export const PRICING_MENTORIA_LEAD =
-  "Si descubriste que tu problema no es simplemente “cobro caro”, sino que necesitas trabajar tu posicionamiento, tu oferta y la forma en que comunicas tu valor, puedes aplicar a una mentoría conmigo.";
